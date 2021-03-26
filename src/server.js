@@ -1,5 +1,6 @@
 // Libs imports
 const express = require('express');
+const cors = require('cors');
 require('dotenv').config();
 
 // Route imports
@@ -8,6 +9,7 @@ const userRouter = require('./controlers/Users');
 const app = express();
 
 // Apply middlewares
+app.use(cors())
 app.use(express.json());
 
 // Apply routes
