@@ -21,12 +21,12 @@ router.get("/:id", async (req,res)=>{
 
 router.post("/", async (req,res)=>{
     const operation = await userModel.addUser(req.body);
-    operation ? res.json(operation) : res.status(400).json(operation);
+    operation ? res.json(operation) : res.status(422).json(operation);
 })
 
 router.post("/:id", async (req,res)=>{
     const operation = await userModel.updateUser(req.params.id,req.body);
-    operation ? res.json(operation) : res.status(400).json(operation);
+    operation ? res.json(operation) : res.status(422).json(operation);
 })
 
 

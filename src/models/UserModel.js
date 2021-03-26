@@ -1,18 +1,20 @@
 const knex = require('knex');
 const dbConfig = require('../db/knexfile')[process.env.ENV||'development'];
 
-const userValidator = require('../validators/UsersValidator');
+const userV = require('../validators/UserValidation');
 
 const table = knex(dbConfig);
 
 
 const addUser = async (user)=>{
-    const validateUser = userValidator(user);
-    if(validateUser.validate){
+    let validateUser = await userV(user)
+
+    if(validateUser.valid){
        await table('users').insert(user)
        .then((id)=>validateUser.msg=`user created succesfully id: ${id}`)
        .catch(err=>{
-           validateUser.validate=false
+           console.error(err)
+           validateUser.valid=false
             validateUser.msg=err
         });
     }
@@ -31,13 +33,20 @@ const getSpecificUser = async (id)=>{
 }
 
 const updateUser = async (id,user)=>{
-    const validateUser = userValidator(user);
-    if(validateUser.validate){
+    let validateUser = await userV(user)
+    if(validateUser.valid){
         await table('users')
         .update(user).where({id})
-        .then(data=>validateUser.msg=data===1 ? "User updated successfully" : `User with id ${id} is not found`)
+        .then(data=>{
+            if(data===1){
+                validateUser.msg="User updated successfully";
+            }else{
+                validateUser.msg=`User with id ${id} is not found`;
+                validateUser.valid=false;
+            }
+        })
         .catch((err)=>{
-            validateUser.validate=false;
+            validateUser.valid=false;
             validateUser.msg=err
         })
     }
