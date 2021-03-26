@@ -1,0 +1,10 @@
+POST http://localhost:3000/users/
+content-type: application/json
+
+{
+    "username": "ahmed",
+    "password": "test"
+}
+
+###
+DELETE       http://localhost:3000/users/3
