@@ -9,14 +9,25 @@ describe("get users",()=>{
         expect(results.status).toBe(200);
     });
     test('Should get a specific user',async ()=>{
-        const results = await axios.get(`http://localhost:3000/users/4`);
-        expect(results.status).toBe(200);
+        try{
+            const results = await axios.get(`http://localhost:3000/users/9`);
+            expect(results.status).toBe(200);
+        }catch(error){
+            expect(error.response.data).toBe(`User with id 9 not found`);
+            expect(error.response.status).toBe(404);
+
+        }
     });
 
     test('Should return an error msg because the user is ont exist',async ()=>{
         const notExistingId = 10000
-        const results = await axios.get(`http://localhost:3000/users/${notExistingId}`);
-        expect(results.data).toBe(`User with id ${notExistingId} not found`);
+        try{
+            const results = await axios.get(`http://localhost:3000/users/${notExistingId}`);
+        }catch(error){
+            expect(error.response.data).toBe(`User with id ${notExistingId} not found`);
+            expect(error.response.status).toBe(404);
+
+        }
     });
 
 

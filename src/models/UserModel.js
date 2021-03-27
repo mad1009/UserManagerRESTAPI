@@ -11,7 +11,10 @@ const addUser = async (user)=>{
 
     if(validateUser.valid){
        await table('users').insert(user)
-       .then((id)=>validateUser.msg=`user created succesfully id: ${id}`)
+       .then(([id])=>{
+        validateUser.msg=`user created succesfully id: ${id}`;
+        validateUser.user.id=id
+       })
        .catch(err=>{
            console.error(err)
            validateUser.valid=false
@@ -54,11 +57,12 @@ const updateUser = async (id,user)=>{
 }
 
 const deleteUser = async (id)=>{
-    let deleted = false
-    await table('users').del().where("id","=",id)
-    .then(()=>deleted=true)
-    .catch(err=>console.error(err));
-    return deleted;
+    try {
+        return await table('users').del().where("id","=",id)        
+    } catch (error) {
+        console.error(err)
+    }
+    
 }
 
 module.exports = {
